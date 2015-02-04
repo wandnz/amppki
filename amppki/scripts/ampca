@@ -10,6 +10,7 @@ from calendar import timegm
 from OpenSSL import crypto
 from Crypto.Hash import SHA256, MD5
 from shutil import rmtree
+from grp import getgrnam
 from amppki.config import CA_DIR, CERT_DIR, CSR_DIR, RABBITMQCTL
 from subprocess import call, STDOUT
 from amppki.common import verify_common_name
@@ -539,12 +540,20 @@ def initialise(force):
 
     # create required directories
     try:
+        # Only the private key directory really needs to be protected, and
+        # www-data needs access to the CSR (write) and CERT (read) directories.
         os.mkdir(CA_DIR)
         os.mkdir(CERT_DIR)
         os.mkdir(KEY_DIR, 0700)
-        os.mkdir(CSR_DIR)
+        oldmask = os.umask(0002)
+        os.mkdir(CSR_DIR, 0770)
+        os.chown(CSR_DIR, -1, getgrnam("www-data").gr_gid)
+        os.umask(oldmask)
     except OSError as e:
         print "Failed to initialise directory: %s" % (e)
+        return -1
+    except KeyError as e:
+        print "Failed to find www-data user, can't set directory permissions"
         return -1
 
     # create required files
