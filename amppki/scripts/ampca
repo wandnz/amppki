@@ -558,22 +558,29 @@ def initialise(force):
     # generate server keys
     key = generate_privkey("cakey")
     if key is None:
+        print "Failed to generate private CA key"
         return -1
+
     # make csr using this key
     request = generate_csr(key, CA_NAME, None, False)
     if request is None:
+        print "Failed to generate certificate signing request"
         return -1
+
     # create the self signed certificate
     cert = sign_request(request, request.get_subject(), key,
             get_ca_extension_list())
     if cert is None:
+        print "Failed to generate self signed certificate"
         return -1
 
     # write the cert out to a file
     if save_certificate(cert, CA_DIR, "cacert.pem") is False:
+        print "Failed to save CA certificate"
         return -1
 
     # TODO should we save our cert in the index?
+    print "Successfully initialised CA directory %s" % CA_DIR
     return 0
 
 
