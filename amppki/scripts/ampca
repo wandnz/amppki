@@ -600,13 +600,8 @@ def create_rabbit_account(name):
         return False
 
     if status == 0:
-        # Added the user ok, now remove their password so they have to login
-        # using external auth
-        try:
-            status = call([RABBITMQCTL, "clear_password", name],
-                    stdout=open("/dev/null", "w"), stderr=STDOUT)
-        except OSError as e:
-            print "Failed to clear password for rabbit user '%s':" % name, e
+        # Added the user ok, now remove their password
+        if not clear_rabbit_password(name):
             return False
     elif status == 1:
         # Return code of 1 appears to mean we didn't have permission to run
@@ -622,6 +617,17 @@ def create_rabbit_account(name):
         # wanted. The password will not be reset/cleared.
         print "RabbitMQ user '%s' already exists, skipping" % name
 
+    return True
+
+
+# Clear the user password so they have to log in using external auth
+def clear_rabbit_password(name):
+    try:
+        status = call([RABBITMQCTL, "clear_password", name],
+                stdout=open("/dev/null", "w"), stderr=STDOUT)
+    except OSError as e:
+        print "Failed to clear password for rabbit user '%s':" % name, e
+        return False
     return True
 
 
