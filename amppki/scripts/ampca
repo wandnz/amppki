@@ -603,6 +603,9 @@ def create_rabbit_account(name):
         # Added the user ok, now remove their password
         if not clear_rabbit_password(name):
             return False
+        # And give them permissions so they can send us data
+        if not set_rabbit_permissions(name):
+            return False
     elif status == 1:
         # Return code of 1 appears to mean we didn't have permission to run
         # the command i.e. we aren't root or rabbitmq user
@@ -624,6 +627,18 @@ def create_rabbit_account(name):
 def clear_rabbit_password(name):
     try:
         status = call([RABBITMQCTL, "clear_password", name],
+                stdout=open("/dev/null", "w"), stderr=STDOUT)
+    except OSError as e:
+        print "Failed to clear password for rabbit user '%s':" % name, e
+        return False
+    return True
+
+
+# Set permissions so they can write data to the default vhost
+# TODO should this be in a different vhost?
+def set_rabbit_permissions(name):
+    try:
+        status = call([RABBITMQCTL, "set_permissions", name, ".*", ".*", ".*"],
                 stdout=open("/dev/null", "w"), stderr=STDOUT)
     except OSError as e:
         print "Failed to clear password for rabbit user '%s':" % name, e
