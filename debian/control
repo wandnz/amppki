@@ -1,0 +1,17 @@
+Source: amppki
+Section: net
+Priority: optional
+Maintainer: Brendon Jones <brendonj@waikato.ac.nz>
+Build-Depends: debhelper (>= 8.0.0), python, libffi-dev
+Standards-Version: 3.9.3
+Homepage: http://amp.wand.net.nz
+#Vcs-Git: git://git.debian.org/collab-maint/ampy.git
+#Vcs-Browser: http://git.debian.org/?p=collab-maint/ampy.git;a=summary
+
+Package: amppki
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, apache2, libapache2-mod-wsgi
+Description: AMP Network Performance Measurement Suite - Cert Authority Tools
+ This package contains the web scripts used to accept certificate signing
+ requests and to serve certificates, as well as the admin scripts to manage
+ signing and revoking certificates.
