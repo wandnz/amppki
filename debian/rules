@@ -13,6 +13,6 @@
 	dh $@ --with python2
 
 override_dh_auto_install:
-	python setup.py install --root=debian/amppki/$(PREFIX) --install-layout=deb
+	python setup.py install --root=debian/amppki/$(PREFIX) --install-layout=deb --install-lib=/usr/share/amppki
 
 override_dh_auto_build:

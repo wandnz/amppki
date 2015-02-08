@@ -1,0 +1,4 @@
+include *.txt *.ini *.cfg
+include pyramid.wsgi amppki.conf production.ini-dist
+recursive-include amppki *.txt
+recursive-include doc *.8

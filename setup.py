@@ -39,7 +39,7 @@ setup(name='amppki',
       zip_safe=False,
       #test_suite='amppki',
       install_requires=requires,
-      scripts=["amppki/scripts/ampca"],
+      #scripts=["amppki/scripts/ampca"],
       entry_points="""\
       [paste.app_factory]
       main = amppki:main

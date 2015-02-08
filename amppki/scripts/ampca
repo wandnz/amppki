@@ -1,7 +1,14 @@
 #!/usr/bin/env python
 
-import os
 import sys
+# Ideally we shouldn't need to do this, but our options appear to be:
+# 1 - install all the private modules into the global dist-packages directory
+# 2 - install them privately and modify the path in some hacky way
+# So, for now, let us install the code into what feels like the better place,
+# alongside the wsgi config, and be slightly hacky here to make it all work.
+sys.path.append("/usr/share/amppki/")
+
+import os
 import fcntl
 import argparse
 from datetime import datetime
