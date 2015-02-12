@@ -12,7 +12,7 @@ Homepage: http://amp.wand.net.nz
 # we use that Debian doesn't actually have...
 Package: amppki
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, apache2, libapache2-mod-wsgi, python-openssl, python-crypto, python-pyramid
+Depends: ${shlibs:Depends}, ${misc:Depends}, apache2, libapache2-mod-wsgi, python-openssl, python-crypto
 Description: AMP Network Performance Measurement Suite - Cert Authority Tools
  This package contains the web scripts used to accept certificate signing
  requests and to serve certificates, as well as the admin scripts to manage

@@ -20,6 +20,16 @@ set -e
 
 case "$1" in
     configure)
+        # TODO actually install these on postinst? or download them as part
+        # of building the package and include the files, installing them with
+        # the rest of our python scripts in /usr/share/amppki/.
+        echo "=============================================================="
+        echo "Debian has really old python packages, if you haven't already:"
+        echo
+        echo "pip install pyramid pyramid-assetviews pyramid-chameleon \\"
+        echo "\tpyramid-mako pyasn1 pyasn1-modules waitress"
+        echo "=============================================================="
+
         # the first thing the user will need to do is initialise the CA
         # directory and we don't let them configure it, so just do it now
         if [ ! -d /etc/amppki/ ]; then
