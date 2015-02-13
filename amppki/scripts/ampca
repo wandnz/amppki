@@ -537,7 +537,7 @@ def load_index(filename):
 
 # TODO allow user configurable directories?
 # TODO make exit values consistent within the program
-def initialise(force):
+def initialise(hostname, force):
     # only initialise the directory if it doesn't exist or --force is used
     if os.path.isdir(CA_DIR) and force:
         rmtree(CA_DIR)
@@ -594,6 +594,32 @@ def initialise(force):
     if save_certificate(cert, CA_DIR, "cacert.pem") is False:
         print "Failed to save CA certificate"
         return -1
+
+    if hostname is not None:
+        # TODO this is all rather duplicated
+        # generate a cert/key pair to use with apache
+        key = generate_privkey("amppki-key");
+        if key is None:
+            print "Failed to generate private amppki key"
+            return -1
+
+        # make csr using this key
+        request = generate_csr(key, hostname, None, False)
+        if request is None:
+            print "Failed to generate certificate signing request"
+            return -1
+
+        # create the self signed certificate
+        cert = sign_request(request, request.get_subject(), key,
+                get_amplet_extension_list())
+        if cert is None:
+            print "Failed to generate certificate"
+            return -1
+
+        # write the cert out to a file
+        if save_certificate(cert, CERT_DIR, "amppki-cert.pem") is False:
+            print "Failed to save amppki certificate"
+            return -1
 
     # TODO should we save our cert in the index?
     print "Successfully initialised CA directory %s" % CA_DIR
@@ -677,10 +703,6 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    if args.action == "initialise":
-        # create directory, subdirectories and default files
-        sys.exit(initialise(args.force))
-
     if len(args.hosts) > 0 and args.all:
         print "Conflicting arguments: both --all and a host list are used"
         sys.exit(2)
@@ -689,6 +711,11 @@ if __name__ == '__main__':
         if verify_common_name(host) is False:
             print "Invalid hostname '%s', aborting" % host
             sys.exit(2)
+
+    if args.action == "initialise":
+        # create directory, subdirectories and default files
+        hostname = args.hosts[0] if len(args.hosts) > 0 else None
+        sys.exit(initialise(hostname, args.force))
 
     # lock the whole CA dir so it doesn't get modified while we use it
     try:

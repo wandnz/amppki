@@ -33,7 +33,17 @@ case "$1" in
         # the first thing the user will need to do is initialise the CA
         # directory and we don't let them configure it, so just do it now
         if [ ! -d /etc/amppki/ ]; then
-            /usr/sbin/ampca initialise
+            # We also need to generate a cert/key pair to use with apache.
+            # The common name needs to match the hostname and it should have
+            # BasicConstraints:CA = False
+            # TODO this needs manual work if there are multiple FQDNs
+            fqdn=`hostname --fqdn`
+            if [ -n $fqdn ]; then
+                /usr/sbin/ampca initialise $fqdn
+                echo "Generating certificates for $fqdn (check correct name!)"
+            else
+                echo "WARNING: Couldn't determine FQDN, no certificate generated!"
+            fi
         fi
 
         if [ ! -f /usr/share/amppki/production.ini ]; then
