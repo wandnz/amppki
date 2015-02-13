@@ -39,6 +39,10 @@ case "$1" in
         if [ ! -f /usr/share/amppki/production.ini ]; then
             cp /usr/share/amppki/production.ini-dist /usr/share/amppki/production.ini
         fi
+
+        # enable the SSL module
+        /usr/sbin/a2enmod ssl
+
         if apache2ctl configtest 2>/dev/null; then
             #invoke-rc.d apache2 force-reload || true
             # use "restart" as a workaround for bug #558608
