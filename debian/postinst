@@ -20,6 +20,8 @@ set -e
 
 case "$1" in
     configure)
+        # XXX this won't actually work, as the ampca script loads config files
+        # which causes the module init to load, which requires pyramid...
         # TODO actually install these on postinst? or download them as part
         # of building the package and include the files, installing them with
         # the rest of our python scripts in /usr/share/amppki/.
@@ -37,7 +39,7 @@ case "$1" in
             # The common name needs to match the hostname and it should have
             # BasicConstraints:CA = False
             # TODO this needs manual work if there are multiple FQDNs
-            fqdn=`hostname --fqdn`
+            fqdn=`hostname --fqdn` || fqdn=`hostname`
             if [ -n $fqdn ]; then
                 /usr/sbin/ampca initialise $fqdn
                 echo "Generating certificates for $fqdn (check correct name!)"
