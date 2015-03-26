@@ -110,6 +110,7 @@ def get_cert_metadata(cert):
     expiry = datetime.strptime(cert.get_notAfter(), "%Y%m%d%H%M%SZ")
 
     return {
+        "host": cert.get_subject().commonName,
         "status": "V",
         "expires": "%s00Z" % timegm(expiry.utctimetuple()),
         "revoked": "",
