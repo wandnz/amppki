@@ -597,6 +597,9 @@ def initialise(hostname, force):
         return -1
 
     if hostname is not None:
+        issuer_cert = load_cacert()
+        issuer_key = load_cakey()
+
         # TODO this is all rather duplicated
         # generate a cert/key pair to use with apache
         key = generate_privkey("amppki-key");
@@ -610,8 +613,8 @@ def initialise(hostname, force):
             print "Failed to generate certificate signing request"
             return -1
 
-        # create the self signed certificate
-        cert = sign_request(request, request.get_subject(), key,
+        # sign the certificate with the freshly-created cacert and key
+        cert = sign_request(request, issuer_cert.get_subject(), issuer_key,
                 get_amplet_extension_list())
         if cert is None:
             print "Failed to generate certificate"
