@@ -20,16 +20,21 @@ set -e
 
 case "$1" in
     configure)
-        # XXX this won't actually work, as the ampca script loads config files
-        # which causes the module init to load, which requires pyramid...
         # TODO actually install these on postinst? or download them as part
         # of building the package and include the files, installing them with
         # the rest of our python scripts in /usr/share/amppki/.
         echo "=============================================================="
         echo "Debian has really old python packages, if you haven't already:"
         echo
-        echo "pip install pyramid pyramid-assetviews pyramid-chameleon \\"
-        echo "\tpyramid-mako pyasn1 pyasn1-modules waitress"
+
+        if [ `lsb_release -sc` = "wheezy"]; then
+            echo "pip install pyramid pyramid-chameleon \\"
+            echo "\tpyasn1 pyasn1-modules waitress"
+            echo "pip install --pre pyramid-assetviews \\"
+        else
+            echo "pip install pyramid-chameleon"
+            echo "pip install --pre pyramid-assetviews \\"
+        fi
         echo "=============================================================="
 
         # the first thing the user will need to do is initialise the CA
