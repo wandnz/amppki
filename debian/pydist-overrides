@@ -3,5 +3,4 @@ pyasn1_modules
 pyramid python-pyramid
 pyramid_assetviews
 pyramid_chameleon
-pyramid_debugtoolbar
 waitress

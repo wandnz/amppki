@@ -14,7 +14,6 @@ requires = [
     'pycrypto',
     'pyramid_chameleon',
     'pyramid',
-    'pyramid_debugtoolbar',
     'pyramid_assetviews',
     'waitress',
     ]
