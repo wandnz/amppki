@@ -1,12 +1,12 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: ampy
+Upstream-Name: amppki
 Upstream-Contact: contact@wand.net.nz
 Source: http://amp.wand.net.nz/
 
 Files: *
 Copyright: 2013 The University of Waikato, Hamilton, New Zealand
 License: Special pre-release license
- NNTSC is proprietary to the University of Waikato and may not be
+ amppki is proprietary to the University of Waikato and may not be
  redistributed, published or disclosed without the express permission
  of the University of Waikato and the WAND Network Research Group.
  .
