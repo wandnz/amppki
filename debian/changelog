@@ -1,3 +1,12 @@
+amppki (0.2-1) unstable; urgency=low
+
+  * Generate certificate for use with apache.
+  * Add missing host field to cert metadata.
+  * Install apache configuration in appropriate location for wheezy and jessie.
+  * Update dependencies.
+
+ -- Brendon Jones <brendonj@waikato.ac.nz>  Tue, 24 May 2016 10:35:36 +1200
+
 amppki (0.1-1) unstable; urgency=low
 
   * Initial release
