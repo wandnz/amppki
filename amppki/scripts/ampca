@@ -388,6 +388,8 @@ def generate_certificates(index, hosts, force):
 
 def sign_request(request, issuer, issuer_key, extensions):
     cert = crypto.X509()
+    # version 3 certificate (0x2) allows extensions
+    cert.set_version(2)
     cert.gmtime_adj_notBefore(NOTBEFORE)
     cert.gmtime_adj_notAfter(NOTAFTER)
     cert.set_issuer(issuer)
