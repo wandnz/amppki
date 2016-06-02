@@ -1,3 +1,10 @@
+amppki (0.3-1) unstable; urgency=low
+
+  * Remove standard Diffie-Hellman ciphers.
+  * Use version 3 X509 certificates so extensions are allowed.
+
+ -- Brendon Jones <brendonj@waikato.ac.nz>  Wed,  1 June 2016 17:21:12 +1200
+
 amppki (0.2-1) unstable; urgency=low
 
   * Generate certificate for use with apache.
