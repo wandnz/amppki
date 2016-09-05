@@ -27,7 +27,7 @@ case "$1" in
         echo "Debian has really old python packages, if you haven't already:"
         echo
 
-        if [ `lsb_release -sc` = "wheezy"]; then
+        if [ `lsb_release -sc` = "wheezy" ]; then
             echo "pip install pyramid pyramid-chameleon \\"
             echo "\tpyasn1 pyasn1-modules waitress"
             echo "pip install --pre pyramid-assetviews \\"
