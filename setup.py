@@ -16,7 +16,7 @@ requires = [
     'pyramid>=1.5.1',
     'pyramid_assetviews>=1.0a3',
     'waitress>=0.8.9',
-    'zope.interface>=4.1.3
+    'zope.interface>=4.1.3',
     ]
 
 setup(name='amppki',
