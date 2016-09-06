@@ -1,9 +1,17 @@
+amppki (0.3-2) unstable; urgency=low
+
+  * Fix broken if statement around lsb_release in postinst script.
+  * Fix default apache config to use a unique WSGI daemon name.
+  * Update dependencies.
+
+ -- Brendon Jones <brendonj@waikato.ac.nz>  Tue,  6 Sep 2016 16:00:51 +1200
+
 amppki (0.3-1) unstable; urgency=low
 
   * Remove standard Diffie-Hellman ciphers.
   * Use version 3 X509 certificates so extensions are allowed.
 
- -- Brendon Jones <brendonj@waikato.ac.nz>  Wed,  1 June 2016 17:21:12 +1200
+ -- Brendon Jones <brendonj@waikato.ac.nz>  Wed,  1 Jun 2016 17:21:12 +1200
 
 amppki (0.2-1) unstable; urgency=low
 
