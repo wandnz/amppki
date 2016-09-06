@@ -2,7 +2,7 @@ Source: amppki
 Section: net
 Priority: optional
 Maintainer: Brendon Jones <brendonj@waikato.ac.nz>
-Build-Depends: debhelper (>= 8.0.0), python, libffi-dev, dh-python
+Build-Depends: debhelper (>= 8.0.0), python, libffi-dev, dh-python, python-setuptools
 Standards-Version: 3.9.3
 Homepage: http://amp.wand.net.nz
 #Vcs-Git: git://git.debian.org/collab-maint/ampy.git
@@ -14,7 +14,7 @@ Package: amppki
 Architecture: any
 # XXX some of these are only useful in jessie but are installed in wheezy
 # anyway... don't care too much as we should be moving away from wheezy!
-Depends: ${shlibs:Depends}, ${misc:Depends}, apache2, libapache2-mod-wsgi, python-openssl, python-crypto, python-pyramid, python-pyasn1, python-pyasn1-modules
+Depends: ${shlibs:Depends}, ${misc:Depends}, apache2, libapache2-mod-wsgi, python-openssl, python-crypto, python-pyramid, python-pyasn1, python-pyasn1-modules, python-zope.interface
 Description: AMP Network Performance Measurement Suite - Cert Authority Tools
  This package contains the web scripts used to accept certificate signing
  requests and to serve certificates, as well as the admin scripts to manage
