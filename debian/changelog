@@ -1,3 +1,9 @@
+amppki (0.3-3) unstable; urgency=low
+
+  * Fix typo in dependency versioning.
+
+ -- Brendon Jones <brendonj@waikato.ac.nz>  Wed,  7 Sep 2016 10:55:53 +1200
+
 amppki (0.3-2) unstable; urgency=low
 
   * Fix broken if statement around lsb_release in postinst script.
