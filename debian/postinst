@@ -87,15 +87,15 @@ case "$1" in
             fi
         fi
 
-        # restart if we enabled the config or the ssl module
-        if $RESTART; then
-            if apache2ctl configtest 2>/dev/null; then
-                #invoke-rc.d apache2 force-reload || true
-                # use "restart" as a workaround for bug #558608
+        if apache2ctl configtest 2>/dev/null; then
+            # restart if we enabled the config or the ssl module
+            if $RESTART; then
                 invoke-rc.d apache2 restart || true
             else
-                echo "Your apache2 configuration is broken, please fix it and restart apache2 manually."
+                invoke-rc.d apache2 force-reload || true
             fi
+        else
+            echo "Your apache2 configuration is broken, please fix it and restart apache2 manually."
         fi
     ;;
 
