@@ -13,10 +13,11 @@ from base64 import urlsafe_b64decode
 from pyasn1.type import univ
 from pyasn1.codec.der import decoder
 from pyasn1.error import SubstrateUnderrunError, PyAsn1Error
+from os import listdir
 from os.path import isfile, basename
-from glob import glob
 from amppki.config import CERT_DIR, CSR_DIR
 from amppki.common import verify_common_name
+import re
 
 @view_config(route_name="default", renderer="string")
 def default(request):
@@ -116,12 +117,23 @@ def cert(request):
 
     # check that the certificate exists on disk
     try:
-        # TODO do we just want to check the newest one?
         # TODO can we accidentally expose other files by doing it this way?
         # TODO don't serve expired or revoked certificates
-        # look at the matching certificate with the latest serial number
-        matches = sorted(glob("%s/%s.*.pem" % (CERT_DIR, ampname)))
-        certstr = open("%s" % matches[-1]).read()
+
+        # try to limit the files we get with a regex, though there are still
+        # plenty of ways names can break this.
+        pattern = re.compile("%s.[0-9A-F]{2,6}.pem" % ampname)
+        matches = [x for x in listdir(CERT_DIR) if re.match(pattern, x)]
+
+        if len(matches) > 1:
+            # TODO do we just want to check the newest one?
+            # look at the matching certificate with the latest serial number
+            print "WARNING: Multiple certificate matches for %s" % ampname
+            matches = sorted(matches)
+        if len(matches) > 0:
+            certstr = open("%s/%s" % (CERT_DIR, matches[-1])).read()
+        else:
+            return Response(status_code=403)
     except (IOError, IndexError) as e:
         # the user doesn't need to know what went wrong, just tell them that
         # they can't get whatever cert they asked for
