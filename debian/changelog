@@ -1,3 +1,10 @@
+amppki (0.4-1) unstable; urgency=low
+
+  * Use a more accurate regex to match certificate files on disk.
+  * Reload apache after installing to load new python scripts.
+
+ -- Brendon Jones <brendonj@waikato.ac.nz>  Thu,  8 Sep 2016 15:08:12 +1200
+
 amppki (0.3-3) unstable; urgency=low
 
   * Fix typo in dependency versioning.
