@@ -8,6 +8,7 @@ import sys
 # alongside the wsgi config, and be slightly hacky here to make it all work.
 sys.path.append("/usr/share/amppki/")
 
+import pkg_resources
 import os
 import fcntl
 import argparse
@@ -18,13 +19,12 @@ from OpenSSL import crypto
 from Crypto.Hash import SHA256, MD5
 from shutil import rmtree
 from grp import getgrnam
-from amppki.config import CA_DIR, CERT_DIR, CSR_DIR, RABBITMQCTL
+from amppki.config import CA_DIR, CERT_DIR, CSR_DIR, RABBITMQCTL, INDEX_FILE
 from subprocess import call, STDOUT
-from amppki.common import verify_common_name
+from amppki.common import verify_common_name, load_index, load_pending_requests, is_expired
 
 CA_NAME = "AMPCA"
 KEY_DIR = "%s/private" % CA_DIR
-INDEX_FILE = "%s/index.txt" % CA_DIR
 SERIAL_FILE = "%s/serial" % CA_DIR
 LOCK_FILE = "%s/.lock" % CA_DIR
 CACERT = "%s/cacert.pem" % CA_DIR
@@ -33,12 +33,6 @@ CAKEY = "%s/private/cakey.pem" % CA_DIR
 NOTBEFORE = 0
 NOTAFTER = 60 * 60 * 24 * 365 * 10
 DIGEST = "sha256"
-
-
-def is_expired(item):
-    if int(item["expires"][:-3]) < time():
-        return True
-    return False
 
 
 def filter_index(index, host):
@@ -190,32 +184,6 @@ def write_serial(filename, serial):
         print "Failed to write serial to %s: %s" % (SERIAL_FILE, e)
         return False
     return True
-
-
-def load_pending_requests():
-    result = []
-    # open each file in the CSR directory - any CSR here has yet to be signed
-    for item in os.listdir(CSR_DIR):
-        try:
-            # make sure it is a CSR
-            filename = "%s/%s" % (CSR_DIR, item)
-            csrstr = open(filename).read()
-            csr = crypto.load_certificate_request(crypto.FILETYPE_PEM, csrstr)
-            result.append({
-                "host": csr.get_subject().commonName,
-                "filename": filename,
-                "subject": csr.get_subject(),
-                "bits": csr.get_pubkey().bits(),
-                "md5": MD5.new(csrstr).hexdigest(),
-                "sha256": SHA256.new(csrstr).hexdigest(),
-            })
-        except crypto.Error as e:
-            #print e
-            pass
-
-    # sort alphabetically by hostname
-    result.sort(key=lambda x:x["host"])
-    return result
 
 
 def get_padding(host):
@@ -520,23 +488,6 @@ def save_index(index, filename):
 
     if rotate_files(INDEX_FILE) is False:
         return None
-
-
-def load_index(filename):
-    index = []
-    for line in open(filename).readlines():
-        parts = line.split("\t")
-        # TODO update the status of expired certificates to 'E'?
-        index.append({
-            "status": parts[0],
-            "expires": parts[1],
-            "revoked": parts[2] if len(parts[2]) > 0 else "",
-            "serial": parts[3],
-            "subject": parts[5].strip(),
-            # XXX extract hostname properly?
-            "host": parts[5].strip().split("/")[1][3:]
-        })
-    return index
 
 
 # TODO allow user configurable directories?
