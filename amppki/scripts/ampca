@@ -279,8 +279,9 @@ def revoke_certificates(index, hosts, force):
             # if they specify a serial, do whatever the user wants
             match = [cert for cert in index if "0x%s" % cert["serial"] == host]
         else:
-            # otherwise do a bit more checking on possible duplicates
-            match = [cert for cert in index if cert["host"] == host]
+            # otherwise do a bit more checking on possible duplicates,
+            # make sure there is only one valid certificate to revoke
+            match = [cert for cert in index if cert["host"] == host and cert["status"] != "R" and not is_expired(cert)]
 
             # by default don't do anything where there are duplicate hostnames
             if len(match) > 1 and force is False:
