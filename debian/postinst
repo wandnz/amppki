@@ -58,6 +58,11 @@ case "$1" in
             else
                 echo "WARNING: Couldn't determine FQDN, no certificate generated!"
             fi
+        else
+            # previous to version 0.5-1 this directory had the www-data group
+            if dpkg --compare-versions "$2" le-nl "0.5-1"; then
+                chgrp -R ampweb /etc/amppki/csr/
+            fi
         fi
 
         if [ ! -f /usr/share/amppki/production.ini ]; then
