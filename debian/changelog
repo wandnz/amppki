@@ -1,3 +1,11 @@
+amppki (0.5-1) unstable; urgency=low
+
+  * Run the web interface as the ampweb user so www-data doesn't have access.
+  * Move more functions into the common library so that amp-web can use them.
+  * Only check valid certs when checking for duplicates during revocation.
+
+ -- Brendon Jones <brendonj@waikato.ac.nz>  Wed, 11 Jan 2017 10:31:09 +1300
+
 amppki (0.4-1) unstable; urgency=low
 
   * Use a more accurate regex to match certificate files on disk.
