@@ -20,6 +20,8 @@ set -e
 
 case "$1" in
     configure)
+        CACERT=/usr/lib/python2.7/dist-packages/ampweb/static/cacert.pem
+
         # TODO actually install these on postinst? or download them as part
         # of building the package and include the files, installing them with
         # the rest of our python scripts in /usr/share/amppki/.
@@ -55,6 +57,12 @@ case "$1" in
             if [ -n $fqdn ]; then
                 /usr/sbin/ampca initialise $fqdn
                 echo "Generating certificates for $fqdn (check correct name!)"
+                if dpkg -s amp-web 2>/dev/null | \
+                        grep -qx "Status: .* installed"; then
+                    if [ ! -e $CACERT ]; then
+                        ln -s /etc/amppki/cacert.pem $CACERT
+                    fi
+                fi
             else
                 echo "WARNING: Couldn't determine FQDN, no certificate generated!"
             fi
