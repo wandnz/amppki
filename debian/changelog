@@ -1,3 +1,9 @@
+amppki (0.5-2) unstable; urgency=low
+
+  * Make the cacert available to serve via ampweb if it is already installed.
+
+ -- Brendon Jones <brendonj@waikato.ac.nz>  Fri, 13 Jan 2017 11:40:59 +1300
+
 amppki (0.5-1) unstable; urgency=low
 
   * Run the web interface as the ampweb user so www-data doesn't have access.
