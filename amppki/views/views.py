@@ -128,7 +128,7 @@ def cert(request):
         if len(matches) > 1:
             # TODO do we just want to check the newest one?
             # look at the matching certificate with the latest serial number
-            print "WARNING: Multiple certificate matches for %s" % ampname
+            #print "WARNING: Multiple certificate matches for %s" % ampname
             matches = sorted(matches,
                     key=lambda match: int(match.split(".")[1], 16))
         if len(matches) > 0:
@@ -170,12 +170,12 @@ def cert(request):
         #return HTTPForbidden()
         return Response(status_code=403)
 
-    print key.exportKey()
+    #print key.exportKey()
 
     # verify the signature using the public key in the cert
     # https://www.dlitz.net/software/pycrypto/api/2.6/Crypto.PublicKey.RSA._RSAobj-class.html#verify
     shahash = SHA256.new(ampname)
-    print shahash.hexdigest()
+    #print shahash.hexdigest()
     verifier = PKCS1_v1_5.new(key)
     if not verifier.verify(shahash, signature):
         print "verification failed"
