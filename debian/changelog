@@ -1,3 +1,9 @@
+amppki (0.5-3) unstable; urgency=low
+
+  * Add lsb-release package to the dependency list, it is used during postinst.
+
+ -- Brendon Jones <brendonj@waikato.ac.nz>  Tue, 30 May 2017 10:17:16 +1200
+
 amppki (0.5-2) unstable; urgency=low
 
   * Make the cacert available to serve via ampweb if it is already installed.
