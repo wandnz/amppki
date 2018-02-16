@@ -130,7 +130,7 @@ def cert(request):
             # look at the matching certificate with the latest serial number
             #print "WARNING: Multiple certificate matches for %s" % ampname
             matches = sorted(matches,
-                    key=lambda match: int(match.split(".")[1], 16))
+                    key=lambda match: int(match.split(".")[-2], 16))
         if len(matches) > 0:
             certstr = open("%s/%s" % (CERT_DIR, matches[-1])).read()
         else:
