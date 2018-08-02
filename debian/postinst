@@ -77,8 +77,18 @@ case "$1" in
             cp /usr/share/amppki/production.ini-dist /usr/share/amppki/production.ini
         fi
 
-        # TODO use dh_apache2
         RESTART=false
+        # check if the ssl module is enabled
+        if ! apache2ctl -M | awk '{print $1}' | grep -qx ssl_module; then
+            # enable the SSL module
+            if /usr/sbin/a2enmod -q ssl; then
+                RESTART=true
+            else
+                echo "Failed to enable apache2 ssl module"
+            fi
+        fi
+
+        # TODO use dh_apache2
         if [ -d /etc/apache2/conf-available/ ]; then
             # try to install the config for apache2 in jessie or similar
             if [ ! -e /etc/apache2/conf-available/amppki.conf ]; then
@@ -95,16 +105,6 @@ case "$1" in
         else
             echo "ERROR: Couldn't determine apache2 configuration directory"
             exit 1
-        fi
-
-        # check if the ssl module is enabled
-        if ! apache2ctl -M | awk '{print $1}' | grep -qx ssl_module; then
-            # enable the SSL module
-            if /usr/sbin/a2enmod -q ssl; then
-                RESTART=true
-            else
-                echo "Failed to enable apache2 ssl module"
-            fi
         fi
 
         if apache2ctl configtest 2>/dev/null; then
