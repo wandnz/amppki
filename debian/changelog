@@ -1,3 +1,9 @@
+amppki (0.7-2) unstable; urgency=low
+
+  * Enable the apache ssl module before enabling config files that use it.
+
+ -- Brendon Jones <brendonj@waikato.ac.nz>  Thu,  2 Aug 2018 14:55:16 +1200
+
 amppki (0.7-1) unstable; urgency=low
 
   * Extract the serial number from the correct part of the cert filename.
