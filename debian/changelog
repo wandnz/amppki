@@ -1,3 +1,9 @@
+amppki (0.7-1) unstable; urgency=low
+
+  * Extract the serial number from the correct part of the cert filename.
+
+ -- Brendon Jones <brendonj@waikato.ac.nz>  Fri, 16 Feb 2018 16:01:15 +1300
+
 amppki (0.6-1) unstable; urgency=low
 
   * Sort certificates by integer value of serial number.
