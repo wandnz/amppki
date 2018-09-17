@@ -14,7 +14,6 @@ requires = [
     'pycrypto>=2.6.1',
     'pyramid_chameleon>=0.3',
     'pyramid>=1.5.1',
-    'pyramid_assetviews>=1.0a3',
     'waitress>=0.8.9',
     'zope.interface>=4.1.3',
     ]

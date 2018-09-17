@@ -5,10 +5,10 @@ def main(global_config, **settings):
 
     config = Configurator(settings=settings)
     config.include("pyramid_chameleon")
-    config.include("pyramid_assetviews")
 
-    config.add_asset_views('amppki:static', filenames=['robots.txt'],
-            http_cache=3600)
+    _robots = open(abspath_from_asset_spec('amppki:static/robots.txt')).read()
+    _robots_response = Response(content_type='text/plain', body=_robots)
+    config.add_view(lambda x: _robots_response, name='robots.txt')
 
     config.add_route("sign", "sign")
     config.add_route("cert", "cert/{ampname}/{signature}")
