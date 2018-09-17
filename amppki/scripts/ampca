@@ -589,6 +589,13 @@ def initialise(hostname, force):
 # verifying well enough. Also, maybe we want to use the HTTP API instead?
 # TODO remove rabbit accounts at a sensible time too
 def create_rabbit_account(name):
+    # it isn't atomic by any means, but try to check that rabbitmq-server is
+    # running before we do anything else. This helps differentiate a return
+    # value of 2 as meaning "user exists" rather than "server not running"
+    if check_rabbit_status() is False:
+        print "Is rabbitmq-server installed correctly and running?"
+        return False
+
     try:
         # It might be nice to keep some of the output from rabbitmqctl, but
         # it is way too verbose in places. If anything goes wrong it dumps
@@ -623,6 +630,16 @@ def create_rabbit_account(name):
     return True
 
 
+def check_rabbit_status():
+    try:
+        status = call([RABBITMQCTL, "status"],
+                stdout=open("/dev/null", "w"), stderr=STDOUT)
+    except OSError as e:
+        print "Failed to check rabbitmq-server status:", e
+        return False
+    return status == 0
+
+
 # Clear the user password so they have to log in using external auth
 def clear_rabbit_password(name):
     try:
@@ -631,7 +648,7 @@ def clear_rabbit_password(name):
     except OSError as e:
         print "Failed to clear password for rabbit user '%s':" % name, e
         return False
-    return True
+    return status == 0
 
 
 # Set permissions so they can write data to the default vhost
@@ -643,7 +660,7 @@ def set_rabbit_permissions(name):
     except OSError as e:
         print "Failed to clear password for rabbit user '%s':" % name, e
         return False
-    return True
+    return status == 0
 
 
 if __name__ == '__main__':
