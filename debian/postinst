@@ -22,21 +22,6 @@ case "$1" in
     configure)
         CACERT=/usr/lib/python2.7/dist-packages/ampweb/static/cacert.pem
 
-        # TODO actually install these on postinst? or download them as part
-        # of building the package and include the files, installing them with
-        # the rest of our python scripts in /usr/share/amppki/.
-        echo "=============================================================="
-        echo "Debian has really old python packages, if you haven't already:"
-        echo
-
-        if [ `lsb_release -sc` = "wheezy" ]; then
-            echo "pip install pyramid pyramid-chameleon \\"
-            echo "\tpyasn1 pyasn1-modules waitress"
-        else
-            echo "pip install pyramid-chameleon"
-        fi
-        echo "=============================================================="
-
         # create the ampweb user if it doesn't already exist, so we can run
         # commands as them rather than www-data
         if ! getent passwd ampweb > /dev/null; then
