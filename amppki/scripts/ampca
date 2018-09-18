@@ -8,19 +8,18 @@ import sys
 # alongside the wsgi config, and be slightly hacky here to make it all work.
 sys.path.append("/usr/share/amppki/")
 
-import pkg_resources
 import os
 import fcntl
 import argparse
 from datetime import datetime
 from time import strftime, gmtime, time
 from calendar import timegm
-from OpenSSL import crypto
-from Crypto.Hash import SHA256, MD5
 from shutil import rmtree
 from grp import getgrnam
-from amppki.config import CA_DIR, CERT_DIR, CSR_DIR, RABBITMQCTL, INDEX_FILE
 from subprocess import call, STDOUT
+
+from OpenSSL import crypto
+from amppki.config import CA_DIR, CERT_DIR, CSR_DIR, RABBITMQCTL, INDEX_FILE
 from amppki.common import verify_common_name, load_index, load_pending_requests, is_expired
 
 CA_NAME = "AMPCA"
@@ -37,8 +36,8 @@ DIGEST = "sha256"
 
 def filter_index(index, host):
     return [item for item in index
-                if item["host"] == host and item["status"] == "V" and
-                    not is_expired(item)]
+            if item["host"] == host and item["status"] == "V" and
+            not is_expired(item)]
 
 
 def rotate_files(which):
@@ -163,7 +162,7 @@ def get_and_increment_serial(filename):
         return None
 
     # rotate the serial files so the new one is in place
-    if rotate_files(SERIAL_FILE) is False:
+    if rotate_files(filename) is False:
         return None
 
     return serial
@@ -173,15 +172,15 @@ def read_serial(filename):
     try:
         return int(open(filename).read(), 16)
     except (IOError, ValueError) as e:
-        print "Failed to read serial from %s: %s" % (SERIAL_FILE, e)
+        print "Failed to read serial from %s: %s" % (filename, e)
         return None
 
 
 def write_serial(filename, serial):
     try:
-        open("%s.tmp" % SERIAL_FILE, "w").write("%02X\n" % serial)
+        open("%s.tmp" % filename, "w").write("%02X\n" % serial)
     except IOError as e:
-        print "Failed to write serial to %s: %s" % (SERIAL_FILE, e)
+        print "Failed to write serial to %s: %s" % (filename, e)
         return False
     return True
 
@@ -556,7 +555,7 @@ def initialise(hostname, force):
 
         # TODO this is all rather duplicated
         # generate a cert/key pair to use with apache
-        key = generate_privkey("amppki-key");
+        key = generate_privkey("amppki-key")
         if key is None:
             print "Failed to generate private amppki key"
             return -1
