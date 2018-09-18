@@ -654,7 +654,7 @@ def clear_rabbit_password(name):
 # TODO should this be in a different vhost?
 def set_rabbit_permissions(name):
     try:
-        status = call([RABBITMQCTL, "set_permissions", name, ".*", ".*", ".*"],
+        status = call([RABBITMQCTL, "set_permissions", name, "", "amp.*", ""],
                 stdout=open("/dev/null", "w"), stderr=STDOUT)
     except OSError as e:
         print "Failed to clear password for rabbit user '%s':" % name, e
