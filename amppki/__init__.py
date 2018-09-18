@@ -1,4 +1,6 @@
 from pyramid.config import Configurator
+from pyramid.asset import abspath_from_asset_spec
+from pyramid.response import Response
 
 def main(global_config, **settings):
     """ Main entry point for web scripts """
