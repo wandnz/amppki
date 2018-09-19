@@ -71,26 +71,6 @@ def sign(request):
     return Response(status_code=202)
 
 
-def is_der_key(asn1):
-    """ Check if the given ASN.1 object is an RSA key object """
-    try:
-        decoded = decoder.decode(asn1)
-        index = decoded[0]
-    except (SubstrateUnderrunError, PyAsn1Error) as e:
-        return False
-
-    # look for a sequence tag with the RSA key object inside it
-    if index.isSameTypeWith(univ.Sequence()):
-        # if it is another sequence, look deeper
-        if index[0].isSameTypeWith(univ.Sequence()):
-            return is_der_key
-        # if it has the right object tag, we've probably found it
-        if index[0].isSameTypeWith(univ.ObjectIdentifier()):
-            if index[0].asTuple() == (1, 2, 840, 113549, 1, 1, 1):
-                return True
-    return False
-
-
 @view_config(route_name="cert", renderer="string")
 def cert(request):
     """ Provide a certificate (if available) for the specified host """
@@ -151,15 +131,11 @@ def cert(request):
     tbsCertificate = DerSequence()
     tbsCertificate.decode(cert[0])
 
-    # we have to look through the certificate to find the right part that
-    # corresponds to the key - it can move around depending on how many other
-    # attributes there are
     try:
-        key = None
-        for item in tbsCertificate:
-            if is_der_key(item):
-                key = RSA.importKey(item)
-                break
+        # the TBSCertificate is a sequence and the 7th element is the
+        # subjectPublicKeyInfo, so we should be able to jump straight to it
+        # https://tools.ietf.org/html/rfc5280#section-4.1
+        key = RSA.importKey(tbsCertificate[6])
     except (ValueError, IndexError, TypeError) as e:
         print "importing key failed:", e
         #return HTTPForbidden()
