@@ -16,3 +16,6 @@ override_dh_auto_install:
 	python setup.py install --root=debian/amppki/$(PREFIX) --install-layout=deb --install-lib=/usr/share/amppki --install-scripts=/usr/sbin
 
 override_dh_auto_build:
+
+override_dh_builddeb:
+	dh_builddeb -- -Zgzip
