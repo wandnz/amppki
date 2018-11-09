@@ -1,3 +1,17 @@
+amppki (0.8-1) unstable; urgency=low
+
+  * Remove dependency on pyramid-assetviews to serve robots.txt.
+  * Add python-waitress and pyramid-chameleon as proper package dependencies.
+  * Try to check if rabbitmq-server is running before issuing commands.
+  * Debian package should be suitable for all architectures.
+  * Restrict permissions slightly when adding new rabbitmq users.
+  * Jump straight to the public key in the TBSCertificate rather than checking
+    every entry for a match (it is actually in a fixed position).
+  * Add amppki.conf as a Debian conffile.
+  * Force using older gzip compression when building package.
+
+ -- Brendon Jones <brendonj@waikato.ac.nz>  Thu,  4 Oct 2018 11:34:51 +1300
+
 amppki (0.7-2) unstable; urgency=low
 
   * Enable the apache ssl module before enabling config files that use it.
