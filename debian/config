@@ -1,0 +1,15 @@
+#!/bin/sh -e
+
+# Source debconf library
+. /usr/share/debconf/confmodule
+
+# Try to provide a default value based on the current hostname
+db_get amppki/fqdn
+fqdn="$RET"
+if [ -z "$fqdn" ]; then
+    db_set amppki/fqdn `hostname --fqdn` || fqdn=`hostname`
+fi
+
+# Hostname to generate certificates for
+db_input high amppki/fqdn || true
+db_go

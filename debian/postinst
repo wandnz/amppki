@@ -20,6 +20,9 @@ set -e
 
 case "$1" in
     configure)
+        # Source debconf library
+        . /usr/share/debconf/confmodule
+
         CACERT=/usr/lib/python2.7/dist-packages/ampweb/static/cacert.pem
 
         # create the ampweb user if it doesn't already exist, so we can run
@@ -32,14 +35,14 @@ case "$1" in
         # the first thing the user will need to do is initialise the CA
         # directory and we don't let them configure it, so just do it now
         if [ ! -d /etc/amppki/ ]; then
+            db_get amppki/fqdn
+            fqdn="$RET"
+
             # We also need to generate a cert/key pair to use with apache.
-            # The common name needs to match the hostname and it should have
-            # BasicConstraints:CA = False
-            # TODO this needs manual work if there are multiple FQDNs
-            fqdn=`hostname --fqdn` || fqdn=`hostname`
+            # The common name needs to match the fully-qualified domain name.
             if [ -n $fqdn ]; then
                 /usr/sbin/ampca initialise $fqdn
-                echo "Generating certificates for $fqdn (check correct name!)"
+                echo "Generating certificates for $fqdn"
                 if dpkg -s amp-web 2>/dev/null | \
                         grep -qx "Status: .* installed"; then
                     if [ ! -e $CACERT ]; then

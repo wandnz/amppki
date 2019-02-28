@@ -1,0 +1,4 @@
+Template: amppki/fqdn
+Type: string
+Description: Fully-Qualified Domain Name to create certificate for:
+ This should match the name that clients use when connecting to this host.
