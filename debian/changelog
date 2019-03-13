@@ -1,3 +1,16 @@
+amppki (0.9-1) unstable; urgency=low
+
+  * Store initially generated certificate/key in their own directory.
+  * Add dependency on rabbitmq, needed to create users when signing certs.
+
+ -- Brendon Jones <brendonj@waikato.ac.nz>  Wed, 13 Mar 2019 14:17:21 +1300
+
+amppki (0.8-2) unstable; urgency=low
+
+  * Use debconf to prompt for FQDN rather than guessing.
+
+ -- Brendon Jones <brendonj@waikato.ac.nz>  Tue, 26 Feb 2019 14:09:33 +1300
+
 amppki (0.8-1) unstable; urgency=low
 
   * Remove dependency on pyramid-assetviews to serve robots.txt.
