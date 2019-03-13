@@ -3,13 +3,13 @@
 import sys
 import os
 from re import search
+from time import time
 from OpenSSL import crypto
 from Crypto.Hash import SHA256, MD5
-from time import time
 
 # XXX
 sys.path.append("/usr/share/amppki/")
-from amppki.config import CA_DIR, CERT_DIR, CSR_DIR, INDEX_FILE
+from amppki.config import CSR_DIR, INDEX_FILE
 
 
 def verify_common_name(name):
@@ -70,5 +70,5 @@ def load_pending_requests(host=None):
             pass
 
     # sort alphabetically by hostname
-    result.sort(key=lambda x:x["host"])
+    result.sort(key=lambda x: x["host"])
     return result

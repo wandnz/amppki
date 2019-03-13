@@ -1,23 +1,21 @@
 """ Routes used to accept requests and distribute signed certificates """
 
-from pyramid.view import view_config
-from pyramid.httpexceptions import *
-from pyramid.response import Response
+from base64 import urlsafe_b64decode
+from os import listdir
+from os.path import isfile, basename
+import re
+from ssl import PEM_cert_to_DER_cert
+
 from Crypto.PublicKey import RSA
 from Crypto.Util.asn1 import DerSequence
 from Crypto.Hash import SHA256
 from Crypto.Signature import PKCS1_v1_5
-from ssl import PEM_cert_to_DER_cert
 from OpenSSL import crypto
-from base64 import urlsafe_b64decode
-from pyasn1.type import univ
-from pyasn1.codec.der import decoder
-from pyasn1.error import SubstrateUnderrunError, PyAsn1Error
-from os import listdir
-from os.path import isfile, basename
 from amppki.config import CERT_DIR, CSR_DIR
 from amppki.common import verify_common_name
-import re
+from pyramid.view import view_config
+from pyramid.httpexceptions import *
+from pyramid.response import Response
 
 @view_config(route_name="default", renderer="string")
 def default(request):
@@ -49,7 +47,7 @@ def sign(request):
             print "invalid characters in common name"
             return Response(status_code=400)
     except crypto.Error as e:
-        print "invalid csr"
+        print "invalid csr: %s" % e
         return Response(status_code=400)
 
     # We use the sha256 hash as the unique filename for this request. Using
@@ -126,10 +124,10 @@ def cert(request):
     # extract the public key from the certificate before we can use it
     # http://stackoverflow.com/questions/12911373/
     der = PEM_cert_to_DER_cert(certstr)
-    cert = DerSequence()
-    cert.decode(der)
+    certificate = DerSequence()
+    certificate.decode(der)
     tbsCertificate = DerSequence()
-    tbsCertificate.decode(cert[0])
+    tbsCertificate.decode(certificate[0])
 
     try:
         # the TBSCertificate is a sequence and the 7th element is the
