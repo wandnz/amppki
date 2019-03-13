@@ -24,6 +24,7 @@ from amppki.common import verify_common_name, load_index, load_pending_requests,
 
 CA_NAME = "AMPCA"
 KEY_DIR = "%s/private" % CA_DIR
+SERVER_DIR = "%s/server" % CA_DIR
 SERIAL_FILE = "%s/serial" % CA_DIR
 LOCK_FILE = "%s/.lock" % CA_DIR
 CACERT = "%s/cacert.pem" % CA_DIR
@@ -271,11 +272,11 @@ def revoke_certificates(index, hosts, force):
     print "Revoked %d certificate(s)" % count
 
 
-def generate_privkey(host):
+def generate_privkey(host, base=KEY_DIR):
     key = crypto.PKey()
     key.generate_key(crypto.TYPE_RSA, 2048)
     try:
-        open("%s/%s.pem" % (KEY_DIR, host), "w").write(
+        open("%s/%s.pem" % (base, host), "w").write(
                 crypto.dump_privatekey(crypto.FILETYPE_PEM, key))
     except IOError as e:
         print "Failed to write private key for %s: %s" % (host, e)
@@ -501,11 +502,18 @@ def initialise(hostname, force):
 
     # create required directories
     try:
-        # Only the private key directory really needs to be protected, and
+        # Only the private key directory really needs to be protected.
         # ampweb needs access to the CSR (write) and CERT (read) directories.
+        # rabbitmq needs access to the SERVER (read) directory.
         os.mkdir(CA_DIR)
         os.mkdir(CERT_DIR)
         os.mkdir(KEY_DIR, 0700)
+
+        oldmask = os.umask(0027)
+        os.mkdir(SERVER_DIR, 0750)
+        os.chown(SERVER_DIR, -1, getgrnam("rabbitmq").gr_gid)
+        os.umask(oldmask)
+
         oldmask = os.umask(0002)
         os.mkdir(CSR_DIR, 0770)
         os.chown(CSR_DIR, -1, getgrnam("ampweb").gr_gid)
@@ -514,7 +522,7 @@ def initialise(hostname, force):
         print "Failed to initialise directory: %s" % (e)
         return -1
     except KeyError as e:
-        print "Failed to find ampweb user, can't set directory permissions"
+        print "Failed to set directory permissions: %s" % (e)
         return -1
 
     # create required files
@@ -555,7 +563,7 @@ def initialise(hostname, force):
 
         # TODO this is all rather duplicated
         # generate a cert/key pair to use with apache
-        key = generate_privkey("amppki-key")
+        key = generate_privkey("amppki-key", base=SERVER_DIR)
         if key is None:
             print "Failed to generate private amppki key"
             return -1
@@ -574,7 +582,7 @@ def initialise(hostname, force):
             return -1
 
         # write the cert out to a file
-        if save_certificate(cert, CERT_DIR, "amppki-cert.pem") is False:
+        if save_certificate(cert, SERVER_DIR, "amppki-cert.pem") is False:
             print "Failed to save amppki certificate"
             return -1
 
