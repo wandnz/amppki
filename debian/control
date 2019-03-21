@@ -8,11 +8,9 @@ Homepage: http://amp.wand.net.nz
 #Vcs-Git: git://git.debian.org/collab-maint/ampy.git
 #Vcs-Browser: http://git.debian.org/?p=collab-maint/ampy.git;a=summary
 
-# XXX ${python:Depends} removed because it wants to pull in all the packages
-# we use that Debian doesn't actually have...
 Package: amppki
 Architecture: all
-Depends: ${shlibs:Depends}, ${misc:Depends}, apache2, libapache2-mod-wsgi, python-openssl, python-crypto, python-pyramid, python-pyasn1, python-pyasn1-modules, python-zope.interface, lsb-release, python-waitress (>= 0.8.9), pyramid-chameleon (>= 0.3), debconf, rabbitmq-server (>= 3.1.5)
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, apache2, libapache2-mod-wsgi, python-pyasn1-modules, lsb-release, python-waitress (>= 0.8.9), pyramid-chameleon (>= 0.3), debconf, rabbitmq-server (>= 3.1.5), adduser
 Description: AMP Network Performance Measurement Suite - Cert Authority Tools
  This package contains the web scripts used to accept certificate signing
  requests and to serve certificates, as well as the admin scripts to manage
