@@ -16,6 +16,40 @@ The other components of the AMP system are:
 
 For more information please email contact@wand.net.nz.
 
+
+## Installing amppki
+
+You should install amppki on the AMP collector server so that it can update
+RabbitMQ as certificates are signed. If you haven't already, add the official
+AMP repositories and install the amppki package:
+
+    $ wget -O- https://bintray.com/user/downloadSubjectPublicKey?username=wand | sudo apt-key add -
+    $ echo "deb https://dl.bintray.com/wand/amp `lsb_release -c -s` main" | sudo tee /etc/apt/sources.list.d/bintray.amplet2.list
+    $ sudo apt-get install apt-transport-https
+    $ sudo apt-get update
+    $ sudo apt-get install amppki
+
+
+## Running amppki
+
+AMP clients will try to connect to amppki on TCP port 7655, present a
+certificate signing request, and wait for the certificate to be signed.
+Use `/usr/sbin/ampca` to list, sign or deny the requests.
+
+To list the currently outstanding certificate signing requests:
+
+    sudo ampca list
+
+To sign a request and create the related RabbitMQ user:
+
+    sudo ampca sign <identifier>
+
+To deny a signing request:
+
+    sudo ampca deny <identifier>
+
+See the man page for further details of the commands available.
+
 ----
 
 This code has been developed by the
