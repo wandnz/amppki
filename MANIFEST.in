@@ -1,4 +1,5 @@
 include README.md
+include COPYING
 include *.txt *.ini *.cfg
 include pyramid.wsgi amppki.conf production.ini-dist
 recursive-include amppki *.txt
