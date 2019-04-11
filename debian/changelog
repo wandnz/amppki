@@ -1,3 +1,12 @@
+amppki (0.9-2) unstable; urgency=low
+
+  * Update Debian package dependencies.
+  * Update license to GPL version 2.
+  * Update documentation.
+  * Don't ask debconf questions when upgrading package.
+
+ -- Brendon Jones <brendonj@waikato.ac.nz>  Thu, 11 Apr 2019 15:25:11 +1200
+
 amppki (0.9-1) unstable; urgency=low
 
   * Store initially generated certificate/key in their own directory.
