@@ -59,6 +59,11 @@ case "$1" in
             fi
         fi
 
+        # stop debconf so its file descriptors get closed. If we don't do
+        # this then any daemons we start (i.e. apache) could hold them open
+        # and cause this script to hang
+        db_stop
+
         if [ ! -f /usr/share/amppki/production.ini ]; then
             cp /usr/share/amppki/production.ini-dist /usr/share/amppki/production.ini
         fi
