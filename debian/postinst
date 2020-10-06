@@ -40,7 +40,7 @@ case "$1" in
 
             # We also need to generate a cert/key pair to use with apache.
             # The common name needs to match the fully-qualified domain name.
-            if [ -n $fqdn ]; then
+            if [ -n "$fqdn" ]; then
                 /usr/sbin/ampca initialise $fqdn
                 echo "Generating certificates for $fqdn"
                 if dpkg -s amp-web 2>/dev/null | \
