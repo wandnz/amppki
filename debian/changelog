@@ -1,3 +1,10 @@
+amppki (0.9-3) unstable; urgency=low
+
+  * Quote fqdn variable in postinst in case it has zero length.
+  * Call db_stop to stop postinst script hanging after apache is started.
+
+ -- Brendon Jones <brendonj@waikato.ac.nz>  Wed,  7 Oct 2020 12:01:23 +1300
+
 amppki (0.9-2) unstable; urgency=low
 
   * Update Debian package dependencies.
