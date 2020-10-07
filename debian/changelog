@@ -1,3 +1,9 @@
+amppki (0.9-4) unstable; urgency=low
+
+  * Prevent generating automatic dependencies on chameleon packages.
+
+ -- Brendon Jones <brendonj@waikato.ac.nz>  Thu,  8 Oct 2020 11:40:46 +1300
+
 amppki (0.9-3) unstable; urgency=low
 
   * Quote fqdn variable in postinst in case it has zero length.
