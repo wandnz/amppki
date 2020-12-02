@@ -3,6 +3,7 @@ stages:
  - upload
 
 .generic_apt_build_template: &generic_apt_build
+  export DEBIAN_FRONTEND=noninteractive &&
   apt-get update && apt-get -y upgrade &&
   apt-get install -y ca-certificates devscripts dpkg-dev equivs lsb-release &&
   export DEBEMAIL='brendonj@waikato.ac.nz' &&
@@ -12,6 +13,19 @@ stages:
   dpkg-buildpackage -b -us -uc -rfakeroot &&
   mkdir -p built-packages/$CODENAME/ || true &&
   mv ../*.deb built-packages/$CODENAME/
+
+build-focal:
+  stage: build
+  image: ubuntu:focal
+  script:
+    - *generic_apt_build
+  artifacts:
+    paths:
+      - built-packages/*
+    expire_in: 1 day
+  only:
+    - web
+    - tags
 
 build-bionic:
   stage: build
