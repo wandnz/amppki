@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # This file is part of amppki.
 #
@@ -76,7 +76,7 @@ def rotate_files(which):
         # move new one into the primary position
         os.rename("%s.tmp" % which, which)
     except OSError as e:
-        print "Failed to rotate %s" % e
+        print("Failed to rotate %s" % e)
         return None
     return True
 
@@ -85,14 +85,14 @@ def get_ca_extension_list():
     return [
         # this certificate is not a CA
         crypto.X509Extension(
-            "basicConstraints",
+            b"basicConstraints",
             True,
-            "CA:true, pathlen:0"
+            b"CA:true, pathlen:0"
         ),
         crypto.X509Extension(
-            "keyUsage",
+            b"keyUsage",
             True,
-            "keyCertSign, cRLSign"
+            b"keyCertSign, cRLSign"
         ),
         # subjectKeyIdentifier
         # authorityKeyIdentifier
@@ -109,27 +109,27 @@ def get_amplet_extension_list():
     return [
         # this certificate is not a CA
         crypto.X509Extension(
-            "basicConstraints",
+            b"basicConstraints",
             True,
-            "CA:false"
+            b"CA:false"
         ),
         # this certificate can be used for signatures and encryption
         crypto.X509Extension(
-            "keyUsage",
+            b"keyUsage",
             True,
-            "digitalSignature, keyEncipherment"
+            b"digitalSignature, keyEncipherment"
         ),
         # this certificate can be used for server auth and client auth
         crypto.X509Extension(
-            "extendedKeyUsage",
+            b"extendedKeyUsage",
             True,
-            "1.3.6.1.5.5.7.3.1, 1.3.6.1.5.5.7.3.2",
+            b"1.3.6.1.5.5.7.3.1, 1.3.6.1.5.5.7.3.2",
         ),
     ]
 
 
 def get_cert_metadata(cert):
-    expiry = datetime.strptime(cert.get_notAfter(), "%Y%m%d%H%M%SZ")
+    expiry = datetime.strptime(cert.get_notAfter().decode(), "%Y%m%d%H%M%SZ")
 
     return {
         "host": cert.get_subject().commonName,
@@ -146,10 +146,10 @@ def load_cacert():
     try:
         cert = crypto.load_certificate(crypto.FILETYPE_PEM, open(CACERT).read())
     except IOError as e:
-        print "Couldn't load CA cert: %s" % e
+        print("Couldn't load CA cert: %s" % e)
         return None
     except crypto.Error as e:
-        print "Invalid CA cert: %s" % e
+        print("Invalid CA cert: %s" % e)
         return None
     return cert
 
@@ -158,10 +158,10 @@ def load_cakey():
     try:
         key = crypto.load_privatekey(crypto.FILETYPE_PEM, open(CAKEY).read())
     except IOError as e:
-        print "Couldn't load private key: %s" % e
+        print("Couldn't load private key: %s" % e)
         return None
     except crypto.Error as e:
-        print "Invalid key: %s" % e
+        print("Invalid key: %s" % e)
         return None
     return key
 
@@ -173,9 +173,9 @@ def save_certificate(cert, base, name=None):
         if name is None:
             name = "%s.%02X.pem" % (host, serial)
         open("%s/%s" % (base, name), "w").write(
-                crypto.dump_certificate(crypto.FILETYPE_PEM, cert))
+                crypto.dump_certificate(crypto.FILETYPE_PEM, cert).decode())
     except IOError as e:
-        print "Failed to write certificate %s: %s" % (host, e)
+        print("Failed to write certificate %s: %s" % (host, e))
         return False
     return True
 
@@ -201,7 +201,7 @@ def read_serial(filename):
     try:
         return int(open(filename).read(), 16)
     except (IOError, ValueError) as e:
-        print "Failed to read serial from %s: %s" % (filename, e)
+        print("Failed to read serial from %s: %s" % (filename, e))
         return None
 
 
@@ -209,7 +209,7 @@ def write_serial(filename, serial):
     try:
         open("%s.tmp" % filename, "w").write("%02X\n" % serial)
     except IOError as e:
-        print "Failed to write serial to %s: %s" % (filename, e)
+        print("Failed to write serial to %s: %s" % (filename, e))
         return False
     return True
 
@@ -222,8 +222,8 @@ def list_pending(pending, hosts):
     for item in pending:
         if len(hosts) > 0 and item["host"] not in hosts:
             continue
-        print "  %s %s %s 0x%s" % (item["host"], get_padding(item["host"]),
-                item["bits"], item["md5"])
+        print("  %s %s %s 0x%s" % (item["host"], get_padding(item["host"]),
+                item["bits"], item["md5"]))
 
 
 def list_certificates(certs, hosts):
@@ -259,11 +259,10 @@ def list_certificates(certs, hosts):
                     get_padding(host), item["serial"], when))
 
     # sort all the output based on hostname, so we ge a nice alphabetical list
-    keys = merged.keys()
-    keys.sort()
+    keys = sorted(merged)
     for host in keys:
         for cert in merged[host]:
-            print cert
+            print(cert)
 
 
 def revoke_certificates(index, hosts, force):
@@ -281,8 +280,8 @@ def revoke_certificates(index, hosts, force):
 
             # by default don't do anything where there are duplicate hostnames
             if len(match) > 1 and force is False:
-                print "Duplicate certs for %s, specify serial or --force" % (
-                        host)
+                print("Duplicate certs for %s, specify serial or --force" % (
+                        host))
                 continue
         torevoke += match
 
@@ -297,7 +296,7 @@ def revoke_certificates(index, hosts, force):
 
     if count > 0:
         save_index(index, "%s.tmp" % INDEX_FILE)
-    print "Revoked %d certificate(s)" % count
+    print("Revoked %d certificate(s)" % count)
 
 
 def generate_privkey(host, base=KEY_DIR):
@@ -305,9 +304,9 @@ def generate_privkey(host, base=KEY_DIR):
     key.generate_key(crypto.TYPE_RSA, 2048)
     try:
         open("%s/%s.pem" % (base, host), "w").write(
-                crypto.dump_privatekey(crypto.FILETYPE_PEM, key))
+                crypto.dump_privatekey(crypto.FILETYPE_PEM, key).decode())
     except IOError as e:
-        print "Failed to write private key for %s: %s" % (host, e)
+        print("Failed to write private key for %s: %s" % (host, e))
     return key
 
 
@@ -323,9 +322,9 @@ def generate_csr(key, host, org="client", save=True):
         try:
             open("%s/%s.csr" % (CSR_DIR, host), "w").write(
                     crypto.dump_certificate_request(crypto.FILETYPE_PEM,
-                        request))
+                        request).decode())
         except IOError as e:
-            print "Failed to write CSR %s: %s" % (host, e)
+            print("Failed to write CSR %s: %s" % (host, e))
             return None
 
     return request
@@ -346,14 +345,14 @@ def generate_certificates(index, hosts, force):
         if force is False:
             existing = filter_index(index, host)
             if len(existing) > 0:
-                print "Cert already exists for %s, specify --force to sign" % (
-                        host)
+                print("Cert already exists for %s, specify --force to sign" % (
+                        host))
                 continue
 
         # This seems most likely to fail, so do it before we sign and save
         # the certificate for this host
         if create_rabbit_account(host) is False:
-            print "Errors running rabbitmqctl, aborting"
+            print("Errors running rabbitmqctl, aborting")
             break
 
         key = generate_privkey(host)
@@ -380,7 +379,7 @@ def generate_certificates(index, hosts, force):
 
     if count > 0:
         save_index(index, "%s.tmp" % INDEX_FILE)
-    print "Generated %d certificate/keypairs" % count
+    print("Generated %d certificate/keypairs" % count)
 
 
 def sign_request(request, issuer, issuer_key, extensions):
@@ -397,7 +396,7 @@ def sign_request(request, issuer, issuer_key, extensions):
     serial = get_and_increment_serial(SERIAL_FILE)
 
     if serial is None:
-        print "Can't get serial number, aborting"
+        print("Can't get serial number, aborting")
         return None
 
     cert.set_serial_number(serial)
@@ -421,14 +420,14 @@ def sign_certificates(index, pending, hosts, force):
 
             # by default don't sign anything where there are duplicate hostnames
             if len(matches) > 1 and force is False:
-                print "Duplicate requests for %s, specify hash or --force" % (
-                        host)
+                print("Duplicate requests for %s, specify hash or --force" % (
+                        host))
                 continue
             # make sure we don't already have a certificate for this host,
             # unless the user explicitly forces another one to be signed
             if len(existing) > 0 and force is False:
-                print "Cert already exists for %s, specify --force to sign" % (
-                        host)
+                print("Cert already exists for %s, specify --force to sign" % (
+                        host))
                 continue
         tosign += matches
 
@@ -445,20 +444,20 @@ def sign_certificates(index, pending, hosts, force):
             request = crypto.load_certificate_request(crypto.FILETYPE_PEM,
                 open(item["filename"]).read())
             if verify_common_name(request.get_subject().commonName) is False:
-                print "Invalid common name '%s', skipping" % (
-                        request.get_subject().commonName)
+                print("Invalid common name '%s', skipping" % (
+                        request.get_subject().commonName))
                 continue
         except IOError as e:
-            print "Couldn't find CSR for %s: %s" % (item["host"], e)
+            print("Couldn't find CSR for %s: %s" % (item["host"], e))
             continue
         except crypto.Error as e:
-            print "Invalid CSR for %s: %s" % (item["host"], e)
+            print("Invalid CSR for %s: %s" % (item["host"], e))
             continue
 
         # This seems most likely to fail, so do it before we sign and save
         # the certificate for this host
         if create_rabbit_account(item["host"]) is False:
-            print "Errors running rabbitmqctl, aborting"
+            print("Errors running rabbitmqctl, aborting")
             break
 
         cert = sign_request(request, issuer_cert.get_subject(), issuer_key,
@@ -480,7 +479,7 @@ def sign_certificates(index, pending, hosts, force):
 
     if count > 0:
         save_index(index, "%s.tmp" % INDEX_FILE)
-    print "Signed %d certificate(s)" % count
+    print("Signed %d certificate(s)" % count)
 
 
 def deny_pending_requests(pending, hosts, force):
@@ -495,23 +494,23 @@ def deny_pending_requests(pending, hosts, force):
 
             # by default don't do anything where there are duplicate hostnames
             if len(matches) > 1 and force is False:
-                print "Duplicate requests for %s, specify hash or --force" % (
-                        host)
+                print("Duplicate requests for %s, specify hash or --force" % (
+                        host))
                 continue
         todeny += matches
 
     for request in todeny:
         os.unlink(request["filename"])
 
-    print "Denied %s signing request(s)" % len(todeny)
+    print("Denied %s signing request(s)" % len(todeny))
 
 
 def save_index(index, filename):
     out = open(filename, "w")
     for line in index:
-        print >> out, "%s\t%s\t%s\t%s\tunknown\t%s" % (line["status"],
+        out.write("%s\t%s\t%s\t%s\tunknown\t%s\n" % (line["status"],
                 line["expires"], line["revoked"], line["serial"],
-                line["subject"])
+                line["subject"]))
     out.close()
 
     if rotate_files(INDEX_FILE) is False:
@@ -525,7 +524,7 @@ def initialise(hostname, force):
     if os.path.isdir(CA_DIR) and force:
         rmtree(CA_DIR)
     elif os.path.isdir(CA_DIR):
-        print "CA directory %s already exists, not initialising" % CA_DIR
+        print("CA directory %s already exists, not initialising" % CA_DIR)
         return -1
 
     # create required directories
@@ -535,22 +534,22 @@ def initialise(hostname, force):
         # rabbitmq needs access to the SERVER (read) directory.
         os.mkdir(CA_DIR)
         os.mkdir(CERT_DIR)
-        os.mkdir(KEY_DIR, 0700)
+        os.mkdir(KEY_DIR, 0o700)
 
-        oldmask = os.umask(0027)
-        os.mkdir(SERVER_DIR, 0750)
+        oldmask = os.umask(0o027)
+        os.mkdir(SERVER_DIR, 0o750)
         os.chown(SERVER_DIR, -1, getgrnam("rabbitmq").gr_gid)
         os.umask(oldmask)
 
-        oldmask = os.umask(0002)
-        os.mkdir(CSR_DIR, 0770)
+        oldmask = os.umask(0o002)
+        os.mkdir(CSR_DIR, 0o770)
         os.chown(CSR_DIR, -1, getgrnam("ampweb").gr_gid)
         os.umask(oldmask)
     except OSError as e:
-        print "Failed to initialise directory: %s" % (e)
+        print("Failed to initialise directory: %s" % (e))
         return -1
     except KeyError as e:
-        print "Failed to set directory permissions: %s" % (e)
+        print("Failed to set directory permissions: %s" % (e))
         return -1
 
     # create required files
@@ -558,31 +557,31 @@ def initialise(hostname, force):
         open(SERIAL_FILE, "w").write("01")
         open(INDEX_FILE, "w").close()
     except IOError as e:
-        print "Failed to initialise files: %s" % (e)
+        print("Failed to initialise files: %s" % (e))
         return -1
 
     # generate server keys
     key = generate_privkey("cakey")
     if key is None:
-        print "Failed to generate private CA key"
+        print("Failed to generate private CA key")
         return -1
 
     # make csr using this key
     request = generate_csr(key, CA_NAME, None, False)
     if request is None:
-        print "Failed to generate certificate signing request"
+        print("Failed to generate certificate signing request")
         return -1
 
     # create the self signed certificate
     cert = sign_request(request, request.get_subject(), key,
             get_ca_extension_list())
     if cert is None:
-        print "Failed to generate self signed certificate"
+        print("Failed to generate self signed certificate")
         return -1
 
     # write the cert out to a file
     if save_certificate(cert, CA_DIR, "cacert.pem") is False:
-        print "Failed to save CA certificate"
+        print("Failed to save CA certificate")
         return -1
 
     if hostname is not None:
@@ -593,29 +592,29 @@ def initialise(hostname, force):
         # generate a cert/key pair to use with apache
         key = generate_privkey("amppki-key", base=SERVER_DIR)
         if key is None:
-            print "Failed to generate private amppki key"
+            print("Failed to generate private amppki key")
             return -1
 
         # make csr using this key
         request = generate_csr(key, hostname, None, False)
         if request is None:
-            print "Failed to generate certificate signing request"
+            print("Failed to generate certificate signing request")
             return -1
 
         # sign the certificate with the freshly-created cacert and key
         cert = sign_request(request, issuer_cert.get_subject(), issuer_key,
                 get_amplet_extension_list())
         if cert is None:
-            print "Failed to generate certificate"
+            print("Failed to generate certificate")
             return -1
 
         # write the cert out to a file
         if save_certificate(cert, SERVER_DIR, "amppki-cert.pem") is False:
-            print "Failed to save amppki certificate"
+            print("Failed to save amppki certificate")
             return -1
 
     # TODO should we save our cert in the index?
-    print "Successfully initialised CA directory %s" % CA_DIR
+    print("Successfully initialised CA directory %s" % CA_DIR)
     return 0
 
 
@@ -628,7 +627,7 @@ def create_rabbit_account(name):
     # running before we do anything else. This helps differentiate a return
     # value of 2 as meaning "user exists" rather than "server not running"
     if check_rabbit_status() is False:
-        print "Is rabbitmq-server installed correctly and running?"
+        print("Is rabbitmq-server installed correctly and running?")
         return False
 
     try:
@@ -638,7 +637,7 @@ def create_rabbit_account(name):
         status = call([RABBITMQCTL, "add_user", name, name],
                 stdout=open("/dev/null", "w"), stderr=STDOUT)
     except OSError as e:
-        print "Failed to add new rabbit user '%s':" % name, e
+        print("Failed to add new rabbit user '%s':" % name, e)
         return False
 
     if status == 0:
@@ -651,7 +650,7 @@ def create_rabbit_account(name):
     elif status == 1:
         # Return code of 1 appears to mean we didn't have permission to run
         # the command i.e. we aren't root or rabbitmq user
-        print "No permissions for rabbitmqctl, failed to add user '%s'" % name
+        print("No permissions for rabbitmqctl, failed to add user '%s'" % name)
         return False
     elif status == 2:
         # I can trigger a return code of 2 if the user exists, or if I don't
@@ -660,7 +659,7 @@ def create_rabbit_account(name):
         # already. Also, assume that it isn't an error worth aborting over,
         # as at the end of this process the user does exist, exactly what we
         # wanted. The password will not be reset/cleared.
-        print "RabbitMQ user '%s' already exists, skipping" % name
+        print("RabbitMQ user '%s' already exists, skipping" % name)
 
     return True
 
@@ -670,7 +669,7 @@ def check_rabbit_status():
         status = call([RABBITMQCTL, "status"],
                 stdout=open("/dev/null", "w"), stderr=STDOUT)
     except OSError as e:
-        print "Failed to check rabbitmq-server status:", e
+        print("Failed to check rabbitmq-server status:", e)
         return False
     return status == 0
 
@@ -681,7 +680,7 @@ def clear_rabbit_password(name):
         status = call([RABBITMQCTL, "clear_password", name],
                 stdout=open("/dev/null", "w"), stderr=STDOUT)
     except OSError as e:
-        print "Failed to clear password for rabbit user '%s':" % name, e
+        print("Failed to clear password for rabbit user '%s':" % name, e)
         return False
     return status == 0
 
@@ -693,7 +692,7 @@ def set_rabbit_permissions(name):
         status = call([RABBITMQCTL, "set_permissions", name, "", "amp.*", ""],
                 stdout=open("/dev/null", "w"), stderr=STDOUT)
     except OSError as e:
-        print "Failed to clear password for rabbit user '%s':" % name, e
+        print("Failed to clear password for rabbit user '%s':" % name, e)
         return False
     return status == 0
 
@@ -714,12 +713,12 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if len(args.hosts) > 0 and args.all:
-        print "Conflicting arguments: both --all and a host list are used"
+        print("Conflicting arguments: both --all and a host list are used")
         sys.exit(2)
 
     for host in args.hosts:
         if verify_common_name(host) is False:
-            print "Invalid hostname '%s', aborting" % host
+            print("Invalid hostname '%s', aborting" % host)
             sys.exit(2)
 
     if args.action == "initialise":
@@ -732,7 +731,7 @@ if __name__ == '__main__':
         lock = open(LOCK_FILE, "w")
         fcntl.lockf(lock.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
     except IOError as e:
-        print "Failed to lock %s: %s" % (LOCK_FILE, e)
+        print("Failed to lock %s: %s" % (LOCK_FILE, e))
         sys.exit(1)
 
     pending = load_pending_requests()

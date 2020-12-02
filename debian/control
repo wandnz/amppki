@@ -2,7 +2,7 @@ Source: amppki
 Section: net
 Priority: optional
 Maintainer: Brendon Jones <brendonj@waikato.ac.nz>
-Build-Depends: debhelper (>= 8.0.0), python, libffi-dev, dh-python, python-setuptools
+Build-Depends: debhelper (>= 9.0.0), python3-all, libffi-dev, dh-python, python3-setuptools
 Standards-Version: 3.9.3
 Homepage: http://amp.wand.net.nz
 #Vcs-Git: git://git.debian.org/collab-maint/ampy.git
@@ -10,7 +10,7 @@ Homepage: http://amp.wand.net.nz
 
 Package: amppki
 Architecture: all
-Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, apache2, libapache2-mod-wsgi, python-pyasn1-modules, lsb-release, python-waitress (>= 0.8.9), pyramid-chameleon (>= 0.3), debconf, rabbitmq-server (>= 3.1.5), adduser
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${python3:Depends}, apache2, libapache2-mod-wsgi-py3, lsb-release, debconf, rabbitmq-server (>= 3.1.5), adduser
 Description: AMP Network Performance Measurement Suite - Cert Authority Tools
  This package contains the web scripts used to accept certificate signing
  requests and to serve certificates, as well as the admin scripts to manage

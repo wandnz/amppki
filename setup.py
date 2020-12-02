@@ -35,12 +35,10 @@ here = os.path.abspath(os.path.dirname(__file__))
 #CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 
 requires = [
-    'argparse>=1.2.1',
     'pyOpenSSL>=0.13',
     'pyasn1>=0.1.7',
     'pyasn1_modules>=0.0.3',
     'pycrypto>=2.6.1',
-    'pyramid_chameleon>=0.3',
     'pyramid>=1.5.1',
     'waitress>=0.8.9',
     'zope.interface>=4.1.1',

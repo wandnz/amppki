@@ -34,7 +34,6 @@ def main(global_config, **settings):
     """ Main entry point for web scripts """
 
     config = Configurator(settings=settings)
-    config.include("pyramid_chameleon")
 
     _robots = open(abspath_from_asset_spec('amppki:static/robots.txt')).read()
     _robots_response = Response(content_type='text/plain', body=_robots)

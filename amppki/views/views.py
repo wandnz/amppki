@@ -48,8 +48,8 @@ from pyramid.response import Response
 @view_config(route_name="default", renderer="string")
 def default(request):
     """ Debug function for dumping information about unknown requests """
-    print "unknown request,", request.method, request.url
-    print request.matchdict
+    print("unknown request,", request.method, request.url)
+    print(request.matchdict)
     return
 
 
@@ -59,10 +59,10 @@ def sign(request):
     """ Accept a certificate signing request """
 
     # TODO can we make sure this is done over SSL? don't accept this otherwise
-    print "accepting cert signing request"
+    print("accepting cert signing request")
 
     if len(request.body) <= 0:
-        print "no csr in message"
+        print("no csr in message")
         return Response(status_code=400)
 
     # this is already url decoded for us, so use it as is
@@ -72,10 +72,10 @@ def sign(request):
         # make sure this is a valid request before we do anything with it
         csr = crypto.load_certificate_request(crypto.FILETYPE_PEM, csrstr)
         if verify_common_name(csr.get_subject().commonName) is False:
-            print "invalid characters in common name"
+            print("invalid characters in common name")
             return Response(status_code=400)
     except crypto.Error as e:
-        print "invalid csr: %s" % e
+        print("invalid csr: %s" % e)
         return Response(status_code=400)
 
     # We use the sha256 hash as the unique filename for this request. Using
@@ -88,10 +88,10 @@ def sign(request):
         # otherwise we add it to the queue and wait for a human to check it and
         # decide if it should be signed or not
         try:
-            open("%s/%s" % (CSR_DIR, shahash), "w").write(csrstr)
+            open("%s/%s" % (CSR_DIR, shahash), "w").write(csrstr.decode())
         except IOError:
             # XXX is this giving away any useful information?
-            print "error saving csr"
+            print("error saving csr")
             return Response(status_code=500)
 
     return Response(status_code=202)
@@ -103,7 +103,7 @@ def cert(request):
 
     # TODO can we make sure this is done over SSL? don't accept this otherwise
     # check that the named cert exists
-    print request.matchdict
+    print(request.matchdict)
 
     # XXX how much validation of the ampname do we need? Coming through the
     # pyramid route it already can't contain slashes, which basename (perhaps
@@ -116,10 +116,10 @@ def cert(request):
     except TypeError as e:
         # in this case we'll give the user a slightly more useful response
         # code - they messed up their signature, nothing of ours is exposed
-        print "failed to base64 decode, invalid data"
+        print("failed to base64 decode, invalid data")
         return Response(status_code=400)
 
-    print "got request for cert", ampname
+    print("got request for cert", ampname)
 
     # check that the certificate exists on disk
     try:
@@ -134,7 +134,7 @@ def cert(request):
         if len(matches) > 1:
             # TODO do we just want to check the newest one?
             # look at the matching certificate with the latest serial number
-            #print "WARNING: Multiple certificate matches for %s" % ampname
+            #print("WARNING: Multiple certificate matches for %s" % ampname
             matches = sorted(matches,
                     key=lambda match: int(match.split(".")[-2], 16))
         if len(matches) > 0:
@@ -144,7 +144,7 @@ def cert(request):
     except (IOError, IndexError) as e:
         # the user doesn't need to know what went wrong, just tell them that
         # they can't get whatever cert they asked for
-        print "failed to open certificate:", e
+        print("failed to open certificate:", e)
         #return HTTPForbidden()
         return Response(status_code=403)
 
@@ -163,27 +163,27 @@ def cert(request):
         # https://tools.ietf.org/html/rfc5280#section-4.1
         key = RSA.importKey(tbsCertificate[6])
     except (ValueError, IndexError, TypeError) as e:
-        print "importing key failed:", e
+        print("importing key failed:", e)
         #return HTTPForbidden()
         return Response(status_code=403)
 
     if key is None:
-        print "key is none"
+        print("key is none")
         #return HTTPForbidden()
         return Response(status_code=403)
 
-    #print key.exportKey()
+    #print(key.exportKey())
 
     # verify the signature using the public key in the cert
     # https://www.dlitz.net/software/pycrypto/api/2.6/Crypto.PublicKey.RSA._RSAobj-class.html#verify
-    shahash = SHA256.new(ampname)
-    #print shahash.hexdigest()
+    shahash = SHA256.new(ampname.encode())
+    #print(shahash.hexdigest())
     verifier = PKCS1_v1_5.new(key)
     if not verifier.verify(shahash, signature):
-        print "verification failed"
+        print("verification failed")
         #return HTTPForbidden()
         return Response(status_code=403)
 
     # return the signed cert
-    print "all ok"
+    print("all ok")
     return certstr
