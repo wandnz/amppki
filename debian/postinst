@@ -28,8 +28,7 @@ case "$1" in
         # create the ampweb user if it doesn't already exist, so we can run
         # commands as them rather than www-data
         if ! getent passwd ampweb > /dev/null; then
-            adduser --quiet --system --group --no-create-home \
-                    --home /etc/ampweb/ ampweb
+            adduser --quiet --system --group --home /etc/ampweb/ ampweb
         fi
 
         # the first thing the user will need to do is initialise the CA
