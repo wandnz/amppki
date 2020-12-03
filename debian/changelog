@@ -1,3 +1,11 @@
+amppki (0.10-1) unstable; urgency=low
+
+  * Update to use python3 rather than python2.
+  * Add Ubuntu Focal as a CI/CD target.
+  * Create the ampweb home directory when creating the user.
+
+ -- Brendon Jones <brendonj@waikato.ac.nz>  Thu,  3 Dec 2020 13:01:54 +1300
+
 amppki (0.9-4) unstable; urgency=low
 
   * Prevent generating automatic dependencies on chameleon packages.

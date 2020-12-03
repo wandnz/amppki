@@ -45,7 +45,7 @@ requires = [
     ]
 
 setup(name='amppki',
-      version='0.9',
+      version='0.10',
       description='amp-pki',
       #long_description=README + '\n\n' +  CHANGES,
       long_description="AMP PKI web interface",
