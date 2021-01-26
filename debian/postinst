@@ -23,7 +23,7 @@ case "$1" in
         # Source debconf library
         . /usr/share/debconf/confmodule
 
-        CACERT=/usr/lib/python2.7/dist-packages/ampweb/static/cacert.pem
+        CACERT=/usr/lib/python3/dist-packages/ampweb/static/cacert.pem
 
         # create the ampweb user if it doesn't already exist, so we can run
         # commands as them rather than www-data
