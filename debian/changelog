@@ -1,3 +1,9 @@
+amppki (0.10-2) unstable; urgency=low
+
+  * Update ampweb certificate location to reflect python3 changes.
+
+ -- Brendon Jones <brendonj@waikato.ac.nz>  Mon, 22 Feb 2021 12:09:16 +1300
+
 amppki (0.10-1) unstable; urgency=low
 
   * Update to use python3 rather than python2.
