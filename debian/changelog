@@ -1,3 +1,10 @@
+amppki (0.11-1) unstable; urgency=low
+
+  * Move from using pycrypto to pycryptodome.
+  * Drop support for Jessie, Stretch, Xenial, which don't have pycryptodome.
+
+ -- Brendon Jones <brendonj@waikato.ac.nz>  Wed,  1 Jun 2022 18:50:15 +1200
+
 amppki (0.10-3) unstable; urgency=low
 
   * Add Debian Bullseye as a CI/CD target.
