@@ -20,11 +20,8 @@ jobs:
       fail-fast: false
       matrix:
         target:
-          - { distro: debian, codename: jessie }
-          - { distro: debian, codename: stretch }
           - { distro: debian, codename: buster }
           - { distro: debian, codename: bullseye }
-          - { distro: ubuntu, codename: xenial }
           - { distro: ubuntu, codename: bionic }
           - { distro: ubuntu, codename: focal }
 

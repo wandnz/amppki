@@ -34,10 +34,10 @@ from os.path import isfile, basename
 import re
 from ssl import PEM_cert_to_DER_cert
 
-from Crypto.PublicKey import RSA
-from Crypto.Util.asn1 import DerSequence
-from Crypto.Hash import SHA256
-from Crypto.Signature import PKCS1_v1_5
+from Cryptodome.PublicKey import RSA
+from Cryptodome.Util.asn1 import DerSequence
+from Cryptodome.Hash import SHA256
+from Cryptodome.Signature import PKCS1_v1_5
 from OpenSSL import crypto
 from amppki.config import CERT_DIR, CSR_DIR
 from amppki.common import verify_common_name

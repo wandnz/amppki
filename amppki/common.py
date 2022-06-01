@@ -33,7 +33,7 @@ import os
 from re import search
 from time import time
 from OpenSSL import crypto
-from Crypto.Hash import SHA256, MD5
+from Cryptodome.Hash import SHA256, MD5
 
 # XXX
 sys.path.append("/usr/share/amppki/")
