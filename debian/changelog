@@ -1,3 +1,9 @@
+amppki (0.10-3) unstable; urgency=low
+
+  * Add Debian Bullseye as a CI/CD target.
+
+ -- Brendon Jones <brendonj@waikato.ac.nz>  Wed,  1 Jun 2022 16:12:23 +1200
+
 amppki (0.10-2) unstable; urgency=low
 
   * Update ampweb certificate location to reflect python3 changes.
