@@ -33,7 +33,7 @@ import os
 from re import search
 from time import time
 from OpenSSL import crypto
-from Cryptodome.Hash import SHA256, MD5
+from Cryptodome.Hash import SHA256
 
 # XXX
 sys.path.append("/usr/share/amppki/")
@@ -90,7 +90,6 @@ def load_pending_requests(host=None):
                 "filename": filename,
                 "subject": csr.get_subject(),
                 "bits": csr.get_pubkey().bits(),
-                "md5": MD5.new(csrstr.encode()).hexdigest(),
                 "sha256": SHA256.new(csrstr.encode()).hexdigest(),
             })
         except crypto.Error as e:

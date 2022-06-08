@@ -222,8 +222,10 @@ def list_pending(pending, hosts):
     for item in pending:
         if len(hosts) > 0 and item["host"] not in hosts:
             continue
+        # TODO is there value in truncating the hash to fit on a single line,
+        # and adding an option to display the full hash?
         print("  %s %s %s 0x%s" % (item["host"], get_padding(item["host"]),
-                item["bits"], item["md5"]))
+                item["bits"], item["sha256"]))
 
 
 def list_certificates(certs, hosts):
@@ -316,7 +318,7 @@ def generate_csr(key, host, org="client", save=True):
     if org is not None:
         request.get_subject().O = org
     request.set_pubkey(key)
-    request.sign(key, "sha256")
+    request.sign(key, DIGEST)
 
     if save:
         try:
@@ -412,7 +414,7 @@ def sign_certificates(index, pending, hosts, force):
     for host in hosts:
         if host.startswith("0x"):
             # if they specify a hash, do whatever the user wants
-            matches = [item for item in pending if "0x%s" % item["md5"] == host]
+            matches = [item for item in pending if "0x%s" % item["sha256"] == host]
         else:
             # otherwise do a bit more checking on possible duplicates
             matches = [item for item in pending if item["host"] == host]
@@ -487,7 +489,7 @@ def deny_pending_requests(pending, hosts, force):
     for host in hosts:
         if host.startswith("0x"):
             # if they specify a hash, do whatever the user wants
-            matches = [item for item in pending if "0x%s" % item["md5"] == host]
+            matches = [item for item in pending if "0x%s" % item["sha256"] == host]
         else:
             # otherwise do a bit more checking on possible duplicates
             matches = [item for item in pending if item["host"] == host]
