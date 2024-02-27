@@ -1,3 +1,9 @@
+amppki (0.11-2) unstable; urgency=low
+
+  * Build packages for Debian Bookworm and Ubuntu Jammy.
+
+ -- Brendon Jones <brendon.jones@gmail.com>  Tue, 27 Feb 2024 18:07:58 +1300
+
 amppki (0.11-1) unstable; urgency=low
 
   * Move from using pycrypto to pycryptodome.
